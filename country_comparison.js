@@ -23,12 +23,6 @@ let country={
 		growthrate:0.08,
 		height:0,
 		color:"#ff6464"
-	},
-	USA:{
-	population:327200000,
-	growthrate:0.07,
-	height:0,
-	color:"#425cf4"
 	}
 
 }
@@ -37,8 +31,10 @@ let h = 10;
 var exc=0;
 var d = new Date();
 
-var popdiv = 1000000;
-
+let speed = 365;
+var popdiv = 100000;
+var popdivmul= 1.001;
+var popdivper = [];
 let dat=d.getFullYear();
 
 function setup() {
@@ -58,20 +54,24 @@ function draw(){
 		
 		fill(country[Object.keys(country)[i]].color);
 		rect(0,country[Object.keys(country)[i]].height,country[Object.keys(country)[i]].population/popdiv,50);
-		country[Object.keys(country)[i]].population += country[Object.keys(country)[i]].population * country[Object.keys(country)[i]].growthrate/365;
+		country[Object.keys(country)[i]].population += country[Object.keys(country)[i]].population * country[Object.keys(country)[i]].growthrate/speed;
 		fill(255);
 		textSize(32);
 		text(Object.keys(country)[i]+": "+ Math.round((country[Object.keys(country)[i]].population/1000000)*100)/100,0,country[Object.keys(country)[i]].height+35);
 		if(country[Object.keys(country)[i]].population/popdiv > width/2){
-			popdiv=popdiv*1.1;
+			popdiv=popdiv*popdivmul;
 		}
+		popdivper[i] = country[Object.keys(country)[i]].population/popdiv;
 		}
 		fill(255);
 		textSize(32);
 	text(dat,width *0.9,height*0.9);
-	if(frameCount%365 ==0){
+	if(frameCount%speed ==0){
 		dat++;
 	}
-	
+	console.log(Math.max(...popdivper));
 
+    if(Math.max(...popdivper) < width/2){
+    	popdiv=popdiv/popdivmul;
+    }
 }
